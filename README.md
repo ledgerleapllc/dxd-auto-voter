@@ -33,7 +33,7 @@ nano accounts.json
 ]
 ```
 
-This file is ignored by github.
+**accounts.json** is ignored by github.
 
 ### Run Auto Voter
 
