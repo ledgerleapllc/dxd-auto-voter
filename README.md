@@ -16,7 +16,12 @@ sudo apt-get install -y php8.1-{bcmath,gd,mbstring,common,curl}
 
 ### Configure
 
-Configure **accounts.json** and add accounts there. Include email/passwords under "accounts" array in the following format,
+Copy **accounts.example.json** to **accounts.json** and add accounts there. Include email/passwords under "accounts" array in the following format,
+
+```bash
+cp accounts.example.json accounts.json
+nano accounts.json
+```
 
 ```json
 "accounts": [
