@@ -1,8 +1,8 @@
 {
-	"accounts": [
-		{
-			"email":    "example@test.com",
-			"password": "password123"
-		}
-	]
+  "accounts": [
+    {
+      "email":    "example@test.com",
+      "password": "password123"
+    }
+  ]
 }
