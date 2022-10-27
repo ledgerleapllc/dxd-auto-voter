@@ -16,8 +16,6 @@ class AutoVoter {
 			if ($account->email == 'example@test.com') {
 				$account->email    = '';
 				$account->password = '';
-			} else {
-				self::elog('Auto voting for account: '.$account->email);
 			}
 		}
 
@@ -90,6 +88,8 @@ class AutoVoter {
 				$account->email &&
 				$account->password
 			) {
+				self::elog('Auto voting for account: '.$account->email);
+
 				$response = self::request_post(
 					"https://backend.devxdao.com/api/login",
 					$global_token,
@@ -100,7 +100,12 @@ class AutoVoter {
 				);
 
 				$global_token = $response->user->accessTokenAPI ?? '';
-				self::elog($global_token."\n");
+
+				if ($global_token) {
+					self::elog("Retrieved bearer token...\n");
+				} else {
+					self::elog("Failed to retrieve bearer token\n");
+				}
 			}
 
 			if($global_token) {
@@ -125,8 +130,8 @@ class AutoVoter {
 						self::elog("Voting 'For'...");
 
 						$vote_response = self::vote(
-							0,
-							0,
+							$proposalId,
+							$voteId,
 							"for",
 							$global_token,
 							0.1
@@ -160,13 +165,13 @@ class AutoVoter {
 						self::elog($title);
 						self::elog("Voting 'For'...");
 
-						// $vote_response = self::vote(
-						// 	$proposalId,
-						// 	$voteId,
-						// 	"for",
-						// 	$global_token,
-						// 	0.1
-						// );
+						$vote_response = self::vote(
+							$proposalId,
+							$voteId,
+							"for",
+							$global_token,
+							0.1
+						);
 
 						sleep(4);
 						self::elog("Success\n");
