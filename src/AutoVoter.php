@@ -125,12 +125,14 @@ class AutoVoter {
 						self::elog("Voting 'For'...");
 
 						$vote_response = self::vote(
-							$proposalId,
-							$voteId,
+							0,
+							0,
 							"for",
 							$global_token,
 							0.1
 						);
+
+						self::elog($vote_response);
 
 						sleep(4);
 						self::elog("Success\n");
@@ -158,13 +160,13 @@ class AutoVoter {
 						self::elog($title);
 						self::elog("Voting 'For'...");
 
-						$vote_response = self::vote(
-							$proposalId,
-							$voteId,
-							"for",
-							$global_token,
-							0.1
-						);
+						// $vote_response = self::vote(
+						// 	$proposalId,
+						// 	$voteId,
+						// 	"for",
+						// 	$global_token,
+						// 	0.1
+						// );
 
 						sleep(4);
 						self::elog("Success\n");
