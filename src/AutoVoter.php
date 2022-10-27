@@ -1,6 +1,16 @@
 <?php
 
 class AutoVoter {
+	public static $api = array(
+		"base_url"  => "https://backend.devxdao.com/api",
+		"endpoints" => array(
+			"login" => "/login",
+			"cast_vote" => "/user/vote",
+			"formal_votes" => "/shared/active-formal-votes",
+			"informal_votes" => "/shared/active-informal-votes",
+		)
+	);
+
 	static function elog($msg) {
 		file_put_contents('php://stderr', print_r("\n", true));
 		file_put_contents('php://stderr', '[DXD AutoVoter '.(date('c')).'] - ');
@@ -65,7 +75,7 @@ class AutoVoter {
 		$value = 0.01
 	) {
 		$response = self::request_post(
-			"https://backend.devxdao.com/api/user/vote",
+			$endpoint_cast_vote,
 			$token,
 			$post_fields = array(
 				"proposalId" => $proposal_id,
@@ -91,7 +101,8 @@ class AutoVoter {
 				self::elog('Auto voting for account: '.$account->email);
 
 				$response = self::request_post(
-					"https://backend.devxdao.com/api/login",
+					self::$api['base_url'].
+					self::$api['endpoints']['login'],
 					$global_token,
 					$post_fields = array(
 						"email"    => $account->email,
@@ -110,7 +121,8 @@ class AutoVoter {
 
 			if($global_token) {
 				$informal_ballots = self::request_get(
-					'https://backend.devxdao.com/api/shared/active-informal-votes', 
+					self::$api['base_url'].
+					self::$api['endpoints']['informal_votes'], 
 					$global_token
 				);
 
@@ -146,7 +158,8 @@ class AutoVoter {
 
 
 				$formal_ballots = self::request_get(
-					'https://backend.devxdao.com/api/shared/active-formal-votes', 
+					self::$api['base_url'].
+					self::$api['endpoints']['formal_votes'], 
 					$global_token
 				);
 
@@ -172,6 +185,8 @@ class AutoVoter {
 							$global_token,
 							0.1
 						);
+
+						self::elog($vote_response);
 
 						sleep(4);
 						self::elog("Success\n");
