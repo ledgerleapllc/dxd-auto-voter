@@ -20,11 +20,10 @@ Configure **accounts.json** and add accounts there. Include email/passwords unde
 
 ```json
 "accounts": [
-	{
-		"email":    "account1@example.com",
-		"password": "password123"
-	},
-	...
+  {
+    "email":    "example@test.com",
+    "password": "password123"
+  }
 ]
 ```
 
