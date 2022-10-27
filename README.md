@@ -23,7 +23,8 @@ Configure **accounts.json** and add accounts there. Include email/passwords unde
   {
     "email":    "example@test.com",
     "password": "password123"
-  }
+  },
+  ...
 ]
 ```
 
