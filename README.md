@@ -33,7 +33,7 @@ nano accounts.json
 ]
 ```
 
-**accounts.json** is ignored by github.
+The script will attempt to log in and vote on behalf of any/all accounts appearing in **accounts.json**.
 
 ### Run Auto Voter
 
