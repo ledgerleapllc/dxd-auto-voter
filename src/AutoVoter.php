@@ -1,12 +1,16 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class AutoVoter {
 	public static $api = array(
 		"base_url"  => "https://backend.devxdao.com/api",
 		"endpoints" => array(
-			"login" => "/login",
-			"cast_vote" => "/user/vote",
-			"formal_votes" => "/shared/active-formal-votes",
+			"login"          => "/login",
+			"cast_vote"      => "/user/vote",
+			"formal_votes"   => "/shared/active-formal-votes",
 			"informal_votes" => "/shared/active-informal-votes",
 		)
 	);
@@ -15,6 +19,64 @@ class AutoVoter {
 		file_put_contents('php://stderr', print_r("\n", true));
 		file_put_contents('php://stderr', '[DXD AutoVoter '.(date('c')).'] - ');
 		file_put_contents('php://stderr', print_r($msg, true));
+	}
+
+	static function email(
+		$recipients = array(),
+		$subject,
+		$body
+	) {
+		$emailer = new PHPMailer(true);
+		// $emailer->SMTPDebug = SMTP::DEBUG_SERVER;
+		$emailer->isSMTP();
+
+		$emailer->Host          = 'smtp.gmail.com';
+		$emailer->Port          = '587';
+		$emailer->SMTPKeepAlive = true;
+		$emailer->SMTPSecure    = 'tls';
+		$emailer->SMTPAuth      = true;
+		$emailer->Username      = '';
+		$emailer->Password      = '';
+
+		$emailer->setFrom('dev@ledgerleap.com', 'DXD AutoVoter');
+		$emailer->addReplyTo('dev@ledgerleap.com', 'DXD AutoVoter');
+		$emailer->isHTML(true);
+
+		$img_src    = 'https://portal.devxdao.com/favicon/android-chrome-192x192.png';
+		$year       = date('Y', time());
+		$template   = file_get_contents(__DIR__.'/email-template.html');
+		$template   = str_replace('[IMG_SRC]', $img_src, $template);
+		$template   = str_replace('[SUBJECT]', $subject, $template);
+		$template   = str_replace('[BODY]',    $body,    $template);
+		$template   = str_replace('[YEAR]',    $year,    $template);
+		$recipients = (array)$recipients;
+
+		if (
+			count($recipients) == 0 ||
+			empty($recipients)
+		) {
+			return false;
+		}
+
+		try {
+			foreach ($recipients as $recipient) {
+				$emailer->addAddress($recipient);
+			}
+
+			$emailer->Subject = $subject;
+			$emailer->Body = $template;
+			$emailer->send();
+			self::elog("SENT notification email to: ".implode(', ', $recipients));
+		} catch (Exception $e) {
+			// elog($e);
+			$emailer->getSMTPInstance()->reset();
+			self::elog("Failed to send notification email to ".implode(', ', $recipients));
+		}
+
+		$emailer->clearAddresses();
+		$emailer->clearAttachments();
+
+		return true;
 	}
 
 	static function get_accounts() {
@@ -72,8 +134,12 @@ class AutoVoter {
 		$vote_id,
 		$direction = "for",
 		$token,
-		$value = 0.01
+		$value = 0
 	) {
+		if ((int)$value == 0) {
+			$value = rand(1, 20) / 10;
+		}
+
 		$response = self::request_post(
 			$endpoint_cast_vote,
 			$token,
@@ -90,6 +156,7 @@ class AutoVoter {
 
 	public static function run() {
 		$accounts = self::get_accounts();
+		$emails   = array();
 
 		foreach ($accounts as $account) {
 			$global_token = '';
@@ -98,6 +165,7 @@ class AutoVoter {
 				$account->email &&
 				$account->password
 			) {
+				$emails[] = $account->email;
 				self::elog('Auto voting for account: '.$account->email);
 
 				$response = self::request_post(
@@ -141,12 +209,18 @@ class AutoVoter {
 						self::elog($title);
 						self::elog("Voting 'For'...");
 
+						$value = 0;
+
+						if ($account->email == 'charles@ledgerleap.com') {
+							$value = 0.01;
+						}
+
 						$vote_response = self::vote(
 							$proposalId,
 							$voteId,
 							"for",
 							$global_token,
-							0.1
+							$value
 						);
 
 						self::elog($vote_response);
@@ -178,12 +252,18 @@ class AutoVoter {
 						self::elog($title);
 						self::elog("Voting 'For'...");
 
+						$value = 0;
+
+						if ($account->email == 'charles@ledgerleap.com') {
+							$value = 0.01;
+						}
+
 						$vote_response = self::vote(
 							$proposalId,
 							$voteId,
 							"for",
 							$global_token,
-							0.1
+							$value
 						);
 
 						self::elog($vote_response);
@@ -194,6 +274,14 @@ class AutoVoter {
 				}
 			}
 		}
+
+		self::elog('Finishing up email notifications');
+
+		self::email(
+			$emails,
+			'DXD AutoVoter',
+			'Your DXD portal votes have been cast automatically today.'
+		);
 
 		self::elog("Done\n");
 	}

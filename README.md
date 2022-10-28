@@ -1,12 +1,15 @@
 ## DXD Auto Voter
 
+Tested on Ubuntu 20 Amazon AWS ec2 micro instance.
+
 ### Setup
+
+Install PHP
 
 ```bash
 cd ~
 git clone https://github.com/ledgerleapllc/dxd-auto-voter.git
 cd dxd-auto-voter
-sudo apt update
 sudo apt -y install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 sudo apt update
@@ -14,11 +17,18 @@ sudo apt-get install -y php8.1
 sudo apt-get install -y php8.1-{bcmath,gd,mbstring,common,curl}
 ```
 
+Install Composer
+
+```bash
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+```
+
 ### Configure
 
 Copy **accounts.example.json** to **accounts.json** and add accounts there. Include email/passwords under "accounts" array in the following format,
 
 ```bash
+composer install
 cp accounts.example.json accounts.json
 nano accounts.json
 ```

@@ -1,0 +1,16 @@
+{
+    "name": "ledgerleapllc/dxd-auto-voter",
+    "description": "DXD portal automatic voting bot",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Thomas Spangler",
+            "email": "thomas@ledgerleap.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.6"
+    },
+    "autoload": {},
+    "scripts": {}
+}
