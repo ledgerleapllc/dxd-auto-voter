@@ -224,10 +224,16 @@ class AutoVoter {
 							$value
 						);
 
-						self::elog($vote_response);
+						// self::elog($vote_response);
 
 						sleep(4);
-						self::elog("Success\n");
+						$success = $vote_response->success ?? 0;
+
+						if ($success) {
+							self::elog("Success\n");
+						} else {
+							self::elog("Failed\n");
+						}
 					}
 				}
 
@@ -267,10 +273,16 @@ class AutoVoter {
 							$value
 						);
 
-						self::elog($vote_response);
+						// self::elog($vote_response);
 
 						sleep(4);
-						self::elog("Success\n");
+						$success = $vote_response->success ?? 0;
+
+						if ($success) {
+							self::elog("Success\n");
+						} else {
+							self::elog("Failed\n");
+						}
 					}
 				}
 			}
