@@ -17,7 +17,7 @@ class AutoVoter {
 
 	static function elog($msg) {
 		file_put_contents('php://stderr', print_r("\n", true));
-		file_put_contents('php://stderr', '[DXD AutoVoter '.(date('c')).'] - ');
+		file_put_contents('php://stderr', '[DxD AutoVoter '.(date('c')).'] - ');
 		file_put_contents('php://stderr', print_r($msg, true));
 	}
 
@@ -38,11 +38,11 @@ class AutoVoter {
 		$emailer->Username      = '';
 		$emailer->Password      = '';
 
-		$emailer->setFrom('dev@ledgerleap.com', 'DXD AutoVoter');
-		$emailer->addReplyTo('dev@ledgerleap.com', 'DXD AutoVoter');
+		$emailer->setFrom('dev@ledgerleap.com', 'DxD AutoVoter');
+		$emailer->addReplyTo('dev@ledgerleap.com', 'DxD AutoVoter');
 		$emailer->isHTML(true);
 
-		$img_src    = 'https://portal.devxdao.com/favicon/android-chrome-192x192.png';
+		$img_src    = 'https://portal.devxdao.com/logoblue-min-big.png';
 		$year       = date('Y', time());
 		$template   = file_get_contents(__DIR__.'/email-template.html');
 		$template   = str_replace('[IMG_SRC]', $img_src, $template);
@@ -141,7 +141,8 @@ class AutoVoter {
 		}
 
 		$response = self::request_post(
-			$endpoint_cast_vote,
+			self::$api['base_url'].
+			self::$api['endpoints']['cast_vote'],
 			$token,
 			$post_fields = array(
 				"proposalId" => $proposal_id,
@@ -279,8 +280,8 @@ class AutoVoter {
 
 		self::email(
 			$emails,
-			'DXD AutoVoter',
-			'Your DXD portal votes have been cast automatically today.'
+			'DxD AutoVoter',
+			'Your DxD portal votes have been cast automatically today.'
 		);
 
 		self::elog("Done\n");
