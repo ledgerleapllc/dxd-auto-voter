@@ -237,6 +237,13 @@ class AutoVoter {
 					}
 				}
 
+				if (
+					count($votes) == 0 ||
+					empty($votes)
+				) {
+					self::elog("No informal ballots available today\n");
+				}
+
 
 				$formal_ballots = self::request_get(
 					self::$api['base_url'].
@@ -284,6 +291,13 @@ class AutoVoter {
 							self::elog("Failed\n");
 						}
 					}
+				}
+
+				if (
+					count($votes) == 0 ||
+					empty($votes)
+				) {
+					self::elog("No formal ballots available today\n");
 				}
 			}
 		}
