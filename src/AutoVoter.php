@@ -136,7 +136,7 @@ class AutoVoter {
 		$token,
 		$value = 0
 	) {
-		if ((int)$value == 0) {
+		if ((float)$value == 0) {
 			$value = rand(1, 20) / 10;
 		}
 
@@ -213,7 +213,7 @@ class AutoVoter {
 						$value = 0;
 
 						if ($account->email == 'charles@ledgerleap.com') {
-							$value = 0.01;
+							$value = rand(1, 9) / 100;
 						}
 
 						$vote_response = self::vote(
@@ -269,7 +269,7 @@ class AutoVoter {
 						$value = 0;
 
 						if ($account->email == 'charles@ledgerleap.com') {
-							$value = 0.01;
+							$value = rand(1, 9) / 100;
 						}
 
 						$vote_response = self::vote(
